@@ -1,0 +1,46 @@
+# Maven target directory
+/target/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Eclipse
+.project
+.classpath
+.settings/
+
+# VS Code
+.vscode/
+
+# Logs
+logs/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment properties
+application.properties
+application.yml
+
+# Maven wrapper files to keep:
+#mvnw
+#mvnw.cmd
+#.mvn/
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+
+# JAR/WAR files
+*.jar
+*.war
+
+# Spring Boot dev tools
+.spring-boot-devtools.properties
+
+# Generated metadata
+META-INF/

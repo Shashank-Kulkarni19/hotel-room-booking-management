@@ -1,0 +1,39 @@
+# Ignore local environment configuration
+.env
+.env.local
+
+# Docker related temporary files
+docker-data/
+docker-volume/
+*.pid
+
+# Ignore Docker build cache
+**/Dockerfile.dev
+**/.dockerignore
+**/cache/
+
+# Ignore IDE/OS files globally
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Ignore backup & temp files
+*.tmp
+*.bak
+*.swp
+
+# Ignore log files
+*.log
+
+# Ignore compiled output
+**/target/
+**/build/
+**/dist/
+
+# Ignore node_modules everywhere
+**/node_modules/
+
+# Ignore Java JAR/WAR from any module
+**/*.jar
+**/*.war
