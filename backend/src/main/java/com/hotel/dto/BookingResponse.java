@@ -22,8 +22,12 @@ public class BookingResponse {
     private String roomNumber;
     private LocalDate checkInDate;
     private LocalDate checkOutDate;
+    private LocalDate bookingDate;
     private Double totalAmount;
     private String status;
+    private String paymentStatus;
+    private String refundStatus;
+
 	public Long getId() {
 		return id;
 	}
@@ -72,6 +76,12 @@ public class BookingResponse {
 	public void setCheckOutDate(LocalDate checkOutDate) {
 		this.checkOutDate = checkOutDate;
 	}
+	public LocalDate getBookingDate() {
+		return bookingDate;
+	}
+	public void setBookingDate(LocalDate bookingDate) {
+		this.bookingDate = bookingDate;
+	}
 	public Double getTotalAmount() {
 		return totalAmount;
 	}
@@ -84,6 +94,17 @@ public class BookingResponse {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	
+    public String getPaymentStatus() {
+        return paymentStatus;
+    }
+    public void setPaymentStatus(String paymentStatus) {
+        this.paymentStatus = paymentStatus;
+    }
+    public String getRefundStatus() {
+        return refundStatus;
+    }
+    public void setRefundStatus(String refundStatus) {
+        this.refundStatus = refundStatus;
+    }
 }
 

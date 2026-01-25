@@ -39,4 +39,26 @@ public class BookingScheduler {
 
         bookingRepository.saveAll(toComplete);
     }
+
+    /**
+     * Automatically cancel PENDING bookings older than 10 minutes
+     * Runs every minute
+     */
+    @Scheduled(fixedRate = 60000)
+    public void cancelExpiredBookings() {
+        java.time.LocalDateTime tenMinutesAgo = java.time.LocalDateTime.now().minusMinutes(10);
+        List<Booking> expiredBookings = bookingRepository.findExpiredPendingBookings(tenMinutesAgo);
+        
+        if (expiredBookings != null && !expiredBookings.isEmpty()) {
+            System.out.println("Cancelling " + expiredBookings.size() + " expired pending bookings");
+            for (Booking booking : expiredBookings) {
+                booking.setStatus("CANCELLED");
+                // Restore room availability if it was decreased
+                try {
+                    roomService.increaseAvailableRooms(booking.getRoom().getId());
+                } catch (Exception ignored) {}
+            }
+            bookingRepository.saveAll(expiredBookings);
+        }
+    }
 }

@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +27,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
      * Check if there are overlapping bookings for a room in a date range
      */
     @Query("SELECT COUNT(b) > 0 FROM Booking b WHERE b.room.id = :roomId " +
-           "AND b.status = 'BOOKED' " +
+           "AND (b.status = 'CONFIRMED' OR b.status = 'PENDING' OR b.status = 'BOOKED') " +
            "AND ((b.checkInDate <= :checkOutDate AND b.checkOutDate >= :checkInDate))")
     Boolean hasOverlappingBooking(@Param("roomId") Long roomId, 
                                   @Param("checkInDate") LocalDate checkInDate, 
@@ -35,14 +36,14 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     /**
      * Count active bookings for a room
      */
-    @Query("SELECT COUNT(b) FROM Booking b WHERE b.room.id = :roomId AND b.status = 'BOOKED'")
+    @Query("SELECT COUNT(b) FROM Booking b WHERE b.room.id = :roomId AND (b.status = 'CONFIRMED' OR b.status = 'PENDING' OR b.status = 'BOOKED')")
     Long countActiveBookingsByRoomId(@Param("roomId") Long roomId);
 
         /**
          * Count overlapping active bookings for a room in a date range
          */
         @Query("SELECT COUNT(b) FROM Booking b WHERE b.room.id = :roomId " +
-            "AND b.status = 'BOOKED' " +
+            "AND (b.status = 'CONFIRMED' OR b.status = 'PENDING' OR b.status = 'BOOKED') " +
             "AND ((b.checkInDate <= :checkOutDate AND b.checkOutDate >= :checkInDate))")
         Long countOverlappingBookings(@Param("roomId") Long roomId,
                           @Param("checkInDate") LocalDate checkInDate,
@@ -51,7 +52,13 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
         /**
          * Find bookings that should be marked completed (checkout date before or equal to today)
          */
-        @Query("SELECT b FROM Booking b WHERE b.status = 'BOOKED' AND b.checkOutDate < :today")
+        @Query("SELECT b FROM Booking b WHERE (b.status = 'CONFIRMED' OR b.status = 'BOOKED') AND b.checkOutDate < :today")
         List<Booking> findBookingsToComplete(@Param("today") LocalDate today);
+
+        /**
+         * Find PENDING bookings created before the specified timestamp
+         */
+        @Query("SELECT b FROM Booking b WHERE b.status = 'PENDING' AND b.createdAt < :timestamp")
+        List<Booking> findExpiredPendingBookings(@Param("timestamp") LocalDateTime timestamp);
 }
 

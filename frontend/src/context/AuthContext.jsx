@@ -11,7 +11,7 @@ export const AuthProvider = ({ children }) => {
     // Check if user is logged in on mount
     const token = localStorage.getItem('token');
     const savedUser = localStorage.getItem('user');
-    
+
     if (token && savedUser) {
       try {
         setUser(JSON.parse(savedUser));
@@ -28,12 +28,12 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await authApi.login({ email, password });
       const { token, id, name, email: userEmail, role } = response;
-      
+
       localStorage.setItem('token', token);
       const userData = { id, name, email: userEmail, role };
       localStorage.setItem('user', JSON.stringify(userData));
       setUser(userData);
-      return { success: true };
+      return { success: true, role };
     } catch (error) {
       return {
         success: false,
@@ -46,31 +46,31 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await authApi.register({ name, email, password });
       const { token, id, name: userName, email: userEmail, role } = response;
-      
+
       localStorage.setItem('token', token);
       const userData = { id, name: userName, email: userEmail, role };
       localStorage.setItem('user', JSON.stringify(userData));
       setUser(userData);
-      return { success: true };
+      return { success: true, role };
     } catch (error) {
       // Handle validation errors from backend
       let errorMessage = 'Registration failed';
-      
+
       if (error.response?.data) {
         const errorData = error.response.data;
-        
+
         // Check for message field (general error)
         if (errorData.message) {
           errorMessage = errorData.message;
         }
-        
+
         // Check for validation errors object
         if (errorData.errors) {
           // Get first validation error
           const firstError = Object.values(errorData.errors)[0];
           errorMessage = firstError || errorMessage;
         }
-        
+
         // Check for direct field errors (legacy format)
         if (typeof errorData === 'object' && !errorData.message && !errorData.errors) {
           const firstError = Object.values(errorData)[0];

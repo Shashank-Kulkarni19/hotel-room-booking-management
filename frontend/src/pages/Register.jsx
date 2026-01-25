@@ -21,92 +21,87 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
       return;
     }
-
     if (formData.password.length < 6) {
       setError('Password must be at least 6 characters');
       return;
     }
-
     setLoading(true);
     const result = await register(formData.name, formData.email, formData.password);
     setLoading(false);
-
-    if (result.success) {
-      navigate('/');
-    } else {
-      setError(result.error);
-    }
+    if (result.success) navigate('/');
+    else setError(result.error);
   };
 
   return (
-    <div className="container my-5">
-      <div className="row justify-content-center">
-        <div className="col-md-6">
-          <div className="card">
-            <div className="card-body">
-              <h2 className="card-title text-center mb-4">Register</h2>
+    <div className="min-vh-100 d-flex align-items-center justify-content-center pt-navbar" style={{ background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)' }}>
+      <div className="container py-5">
+        <div className="row justify-content-center">
+          <div className="col-md-6 col-lg-5">
+            <div className="glass-card p-5 animate-fade-in shadow-lg">
+              <div className="text-center mb-5">
+                <span className="display-4">✨</span>
+                <h2 className="mt-3 display-6 fw-bold">Create Account</h2>
+                <p className="text-muted">Join our exclusive hotel community</p>
+              </div>
+
               {error && (
-                <div className="alert alert-danger" role="alert">
-                  {error}
+                <div className="alert badge-danger border-0 p-3 mb-4 rounded-3 d-flex align-items-center gap-2" role="alert">
+                  <span>⚠️</span> {error}
                 </div>
               )}
+
               <form onSubmit={handleSubmit}>
-                <div className="mb-3">
-                  <label htmlFor="name" className="form-label">
-                    Name
-                  </label>
+                <div className="mb-4">
+                  <label htmlFor="name" className="form-label small fw-bold text-uppercase tracking-wider">Full Name</label>
                   <input
                     type="text"
-                    className="form-control"
+                    className="form-control form-control-lg bg-white border-0 shadow-sm"
                     id="name"
                     name="name"
+                    placeholder="John Doe"
                     value={formData.name}
                     onChange={handleChange}
                     required
                   />
                 </div>
-                <div className="mb-3">
-                  <label htmlFor="email" className="form-label">
-                    Email
-                  </label>
+                <div className="mb-4">
+                  <label htmlFor="email" className="form-label small fw-bold text-uppercase tracking-wider">Email Address</label>
                   <input
                     type="email"
-                    className="form-control"
+                    className="form-control form-control-lg bg-white border-0 shadow-sm"
                     id="email"
                     name="email"
+                    placeholder="john@example.com"
                     value={formData.email}
                     onChange={handleChange}
                     required
                   />
                 </div>
-                <div className="mb-3">
-                  <label htmlFor="password" className="form-label">
-                    Password
-                  </label>
+                <div className="mb-4">
+                  <label htmlFor="password" className="form-label small fw-bold text-uppercase tracking-wider">Password</label>
                   <input
                     type="password"
-                    className="form-control"
+                    className="form-control form-control-lg bg-white border-0 shadow-sm"
                     id="password"
                     name="password"
+                    placeholder="••••••••"
                     value={formData.password}
                     onChange={handleChange}
                     required
                   />
                 </div>
-                <div className="mb-3">
-                  <label htmlFor="confirmPassword" className="form-label">
-                    Confirm Password
-                  </label>
+                <div className="mb-5">
+                  <label htmlFor="confirmPassword" className="form-label small fw-bold text-uppercase tracking-wider">Confirm Password</label>
                   <input
                     type="password"
-                    className="form-control"
+                    className="form-control form-control-lg bg-white border-0 shadow-sm"
                     id="confirmPassword"
                     name="confirmPassword"
+                    placeholder="••••••••"
                     value={formData.confirmPassword}
                     onChange={handleChange}
                     required
@@ -114,15 +109,23 @@ const Register = () => {
                 </div>
                 <button
                   type="submit"
-                  className="btn btn-primary w-100"
+                  className="btn btn-primary w-100 btn-lg shadow-lg"
                   disabled={loading}
                 >
-                  {loading ? 'Registering...' : 'Register'}
+                  {loading ? (
+                    <>
+                      <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+                      Creating account...
+                    </>
+                  ) : 'Register Now'}
                 </button>
               </form>
-              <p className="text-center mt-3">
-                Already have an account? <Link to="/login">Login here</Link>
-              </p>
+
+              <div className="text-center mt-5">
+                <p className="text-muted mb-0">
+                  Already have an account? <Link to="/login" className="text-primary fw-bold text-decoration-none border-bottom border-primary border-2">Sign In</Link>
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -132,4 +135,3 @@ const Register = () => {
 };
 
 export default Register;
-

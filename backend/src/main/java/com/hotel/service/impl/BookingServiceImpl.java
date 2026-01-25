@@ -45,6 +45,9 @@ public class BookingServiceImpl implements BookingService {
     @Autowired
     private com.hotel.service.RoomService roomService;
 
+    @Autowired
+    private com.hotel.repository.PaymentRepository paymentRepository;
+
     @Override
     public BookingResponse createBooking(Long userId, BookingRequest request) {
         // Validate dates
@@ -86,7 +89,7 @@ public class BookingServiceImpl implements BookingService {
         booking.setCheckInDate(request.getCheckInDate());
         booking.setCheckOutDate(request.getCheckOutDate());
         booking.setTotalAmount(totalAmount);
-        booking.setStatus("BOOKED");
+        booking.setStatus("PENDING");
 
         booking = bookingRepository.save(booking);
 
@@ -112,6 +115,11 @@ public class BookingServiceImpl implements BookingService {
 
         if (booking.getStatus().equals("CANCELLED")) {
             throw new BadRequestException("Booking is already cancelled");
+        }
+
+        // Check if current date is before check-in date
+        if (LocalDate.now().plusDays(0).isAfter(booking.getCheckInDate()) || LocalDate.now().isEqual(booking.getCheckInDate())) {
+            throw new BadRequestException("Room cannot be cancelled on or after the check-in date for refund eligibility");
         }
 
         // Update booking status
@@ -162,8 +170,24 @@ public class BookingServiceImpl implements BookingService {
         response.setRoomNumber(booking.getRoom().getRoomNumber());
         response.setCheckInDate(booking.getCheckInDate());
         response.setCheckOutDate(booking.getCheckOutDate());
+        response.setBookingDate(booking.getCreatedAt() != null ? booking.getCreatedAt().toLocalDate() : null);
         response.setTotalAmount(booking.getTotalAmount());
         response.setStatus(booking.getStatus());
+
+        // Fetch and set payment status - we take the latest try
+        paymentRepository.findTopByBookingIdOrderByIdDesc(booking.getId()).ifPresent(payment -> {
+            response.setPaymentStatus(payment.getStatus());
+            response.setRefundStatus(payment.getRefundStatus());
+        });
+
+        if (response.getPaymentStatus() == null) {
+            response.setPaymentStatus("NOT_INITIATED");
+        }
+        
+        if (response.getRefundStatus() == null) {
+            response.setRefundStatus("NOT_REFUNDED");
+        }
+
         return response;
     }
 }

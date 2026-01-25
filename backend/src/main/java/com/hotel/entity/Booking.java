@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * Booking entity representing room reservations
@@ -39,7 +40,13 @@ public class Booking {
     private Double totalAmount;
 
     @Column(nullable = false, length = 20)
-    private String status = "BOOKED"; // BOOKED or CANCELLED
+    private String status = "PENDING"; // PENDING, CONFIRMED, CANCELLED
+
+    @Column(name = "razorpay_order_id")
+    private String razorpayOrderId;
+
+    @Column(name = "created_at", nullable = true, updatable = false)
+    private LocalDateTime createdAt = LocalDateTime.now();
 
 	public Long getId() {
 		return id;
@@ -93,8 +100,24 @@ public class Booking {
 		return status;
 	}
 
-	public void setStatus(String status) {
+    public void setStatus(String status) {
 		this.status = status;
 	}
+
+    public String getRazorpayOrderId() {
+        return razorpayOrderId;
+    }
+
+    public void setRazorpayOrderId(String razorpayOrderId) {
+        this.razorpayOrderId = razorpayOrderId;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 }
 

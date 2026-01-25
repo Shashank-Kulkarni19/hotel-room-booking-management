@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { roomApi } from '../api/roomApi';
 import { bookingApi } from '../api/bookingApi';
+import { createOrder, verifyPayment } from '../api/paymentApi';
 
 const BookRoom = () => {
   const { id } = useParams();
@@ -66,24 +67,104 @@ const BookRoom = () => {
     return days > 0 ? days * room.price : 0;
   };
 
+  /**
+   * Handle Razorpay payment
+   */
+  const handlePayment = async (bookingId, amount) => {
+    try {
+      // Step 1: Create Razorpay order
+      const orderData = await createOrder(bookingId, amount);
+
+      // Step 2: Configure Razorpay options
+      const options = {
+        key: orderData.razorpayKeyId, // Razorpay key from backend
+        amount: orderData.amount * 100, // Amount in paise
+        currency: orderData.currency,
+        name: 'Hotel Booking System',
+        description: `Booking for Room #${room.roomNumber}`,
+        order_id: orderData.orderId,
+        handler: async function (response) {
+          // Step 3: Payment successful - verify on backend
+          try {
+            setLoading(true);
+            const verificationResult = await verifyPayment({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+            });
+
+            if (verificationResult.success) {
+              alert('Payment successful! Your booking is confirmed.');
+              navigate('/my-bookings');
+            } else {
+              setError('Payment verification failed. Booking has been cancelled.');
+            }
+          } catch (err) {
+            setError('Payment verification failed: ' + (err.formattedMessage || err.message));
+          } finally {
+            setLoading(false);
+          }
+        },
+        prefill: {
+          name: JSON.parse(localStorage.getItem('user') || '{}').fullName || '',
+          email: JSON.parse(localStorage.getItem('user') || '{}').email || '',
+        },
+        theme: {
+          color: '#0d6efd',
+        },
+        modal: {
+          ondismiss: function () {
+            setLoading(false);
+            setError('Payment cancelled by user');
+          }
+        }
+      };
+
+      // Step 4: Open Razorpay checkout
+      const razorpay = new window.Razorpay(options);
+      razorpay.open();
+
+    } catch (err) {
+      setLoading(false);
+      setError('Failed to initiate payment: ' + (err.formattedMessage || err.message));
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
     try {
-      await bookingApi.createBooking({
+      // Step 1: Create booking
+      const res = await bookingApi.createBooking({
         roomId: parseInt(id),
         checkInDate: formData.checkInDate,
         checkOutDate: formData.checkOutDate,
       });
-      navigate('/my-bookings');
+
+      // Handle both cases: response being the data itself or nested in 'data'
+      const booking = res.data || res;
+
+      if (!booking || !booking.id) {
+        throw new Error('Failed to create booking - no ID returned from server');
+      }
+
+      // Step 2: Initiate payment
+      const totalAmount = calculateTotal();
+      if (totalAmount <= 0) {
+        throw new Error('Total amount must be greater than zero');
+      }
+
+      await handlePayment(booking.id, totalAmount);
+
     } catch (err) {
-      const errorMsg = err.formattedMessage || 
-                       err.response?.data?.message || 
-                       'Failed to create booking';
+      console.error('Booking Submission Error:', err);
+      const errorMsg = err.formattedMessage ||
+        err.response?.data?.message ||
+        err.message ||
+        'Failed to process booking';
       setError(errorMsg);
-    } finally {
       setLoading(false);
     }
   };
@@ -170,7 +251,7 @@ const BookRoom = () => {
                   className="btn btn-primary w-100"
                   disabled={loading || !formData.checkInDate || !formData.checkOutDate}
                 >
-                  {loading ? 'Booking...' : 'Confirm Booking'}
+                  {loading ? 'Processing...' : 'Proceed to Payment'}
                 </button>
               </form>
             </div>

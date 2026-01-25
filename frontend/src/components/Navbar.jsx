@@ -1,10 +1,19 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const Navbar = () => {
   const { user, logout, isAdmin } = useAuth();
   const navigate = useNavigate();
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -12,10 +21,11 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav className={`navbar navbar-expand-lg fixed-top transition-all duration-300 ${scrolled ? 'navbar-light bg-white shadow-sm' : 'navbar-dark bg-transparent'}`} style={{ height: '70px' }}>
       <div className="container">
-        <Link className="navbar-brand" to="/">
-          🏨 Hotel Booking System
+        <Link className="navbar-brand d-flex align-items-center gap-2" to="/">
+          <span style={{ fontSize: '1.5rem' }}>🏨</span>
+          <span className="fw-bold tracking-tight" style={{ fontStyle: 'Outfit' }}>LUXE STAY</span>
         </Link>
         <button
           className="navbar-toggler"
@@ -26,60 +36,41 @@ const Navbar = () => {
           <span className="navbar-toggler-icon"></span>
         </button>
         <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav me-auto">
+          <ul className="navbar-nav ms-auto align-items-center gap-2">
             <li className="nav-item">
-              <Link className="nav-link" to="/">
-                Home
-              </Link>
+              <Link className="nav-link px-3 fw-medium" to="/">Home</Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/rooms">
-                Rooms
-              </Link>
+              <Link className="nav-link px-3 fw-medium" to="/rooms">Rooms</Link>
             </li>
-            {user && (
+            {user && !isAdmin() && (
               <li className="nav-item">
-                <Link className="nav-link" to="/my-bookings">
-                  My Bookings
-                </Link>
+                <Link className="nav-link px-3 fw-medium" to="/my-bookings">My Bookings</Link>
               </li>
             )}
             {isAdmin() && (
               <li className="nav-item">
-                <Link className="nav-link" to="/admin/dashboard">
-                  Admin Dashboard
-                </Link>
+                <Link className="nav-link px-3 fw-medium text-primary fw-bold" to="/admin/dashboard">Admin Dashboard</Link>
               </li>
             )}
-          </ul>
-          <ul className="navbar-nav">
-            {user ? (
-              <>
-                <li className="nav-item">
-                  <span className="navbar-text me-3">
-                    Welcome, {user.name} {isAdmin() && '(Admin)'}
+
+            <div className="ms-lg-4 d-flex align-items-center gap-3">
+              {user ? (
+                <>
+                  <span className={`small d-none d-lg-inline ${scrolled ? 'text-muted' : 'text-white-50'}`}>
+                    Hello, <span className="fw-bold text-dark">{user.name}</span>
                   </span>
-                </li>
-                <li className="nav-item">
-                  <button className="btn btn-outline-light" onClick={handleLogout}>
+                  <button className="btn btn-primary btn-sm px-4 rounded-pill" onClick={handleLogout}>
                     Logout
                   </button>
-                </li>
-              </>
-            ) : (
-              <>
-                <li className="nav-item">
-                  <Link className="nav-link" to="/login">
-                    Login
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <Link className="nav-link" to="/register">
-                    Register
-                  </Link>
-                </li>
-              </>
-            )}
+                </>
+              ) : (
+                <>
+                  <Link className={`nav-link fw-medium ${scrolled ? 'text-dark' : 'text-white'}`} to="/login">Login</Link>
+                  <Link className="btn btn-primary btn-sm px-4 rounded-pill" to="/register">Register</Link>
+                </>
+              )}
+            </div>
           </ul>
         </div>
       </div>
@@ -88,4 +79,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
