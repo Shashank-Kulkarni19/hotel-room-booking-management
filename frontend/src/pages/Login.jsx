@@ -65,7 +65,7 @@ const Login = () => {
                 <div className="mb-5">
                   <div className="d-flex justify-content-between align-items-center mb-2">
                     <label htmlFor="password" className="form-label small fw-bold text-uppercase tracking-wider mb-0">Password</label>
-                    <a href="#" className="small text-primary text-decoration-none">Forgot password?</a>
+                    <Link to="/forgot-password" size="sm" className="small text-primary text-decoration-none">Forgot password?</Link>
                   </div>
                   <input
                     type="password"

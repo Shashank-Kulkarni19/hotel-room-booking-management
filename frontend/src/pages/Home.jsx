@@ -77,7 +77,7 @@ const Home = () => {
       <section className="hero-section" style={{ backgroundImage: `url('/images/hero.png')` }}>
         <div className="hero-overlay"></div>
         <div className="hero-content animate-fade-in">
-          <h1 className="display-3 mb-4">Experience Luxury <span className="text-gradient">Beyond Limits</span></h1>
+          <h1 className="display-3 mb-4 text-white">Experience Luxury <span className="text-gradient">Beyond Limits</span></h1>
           <p className="lead mb-5 opacity-90">
             Discover a world of comfort and elegance. Hand-picked rooms designed for your ultimate relaxation and peace of mind.
           </p>
@@ -231,8 +231,8 @@ const Home = () => {
       {/* Footer / CTA Section */}
       <section className="bg-dark text-white py-5 mt-5">
         <div className="container text-center">
-          <h2 className="mb-4">Ready for an Unforgettable Stay?</h2>
-          <p className="mb-5 opacity-75">Join thousands of happy guests who found their perfect getaway with us.</p>
+          <h2 className="mb-4 text-white">Ready for an Unforgettable Stay?</h2>
+          <p className="mb-5 text-white opacity-75">Join thousands of happy guests who found their perfect getaway with us.</p>
           <Link to="/rooms" className="btn btn-primary btn-lg px-5">Book Now</Link>
         </div>
       </section>

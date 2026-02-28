@@ -49,9 +49,14 @@ const Navbar = () => {
               </li>
             )}
             {isAdmin() && (
-              <li className="nav-item">
-                <Link className="nav-link px-3 fw-medium text-primary fw-bold" to="/admin/dashboard">Admin Dashboard</Link>
-              </li>
+              <>
+                <li className="nav-item">
+                  <Link className="nav-link px-3 fw-medium text-primary fw-bold" to="/admin/dashboard">Admin Dashboard</Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link px-3 fw-medium text-primary fw-bold" to="/admin/analytics">Analytics</Link>
+                </li>
+              </>
             )}
 
             <div className="ms-lg-4 d-flex align-items-center gap-3">

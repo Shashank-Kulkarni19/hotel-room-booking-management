@@ -200,7 +200,7 @@ const BookRoom = () => {
             <strong>Room Number:</strong> {room.roomNumber}
           </p>
           <p>
-            <strong>Price per night:</strong> ${room.price}
+            <strong>Price per night:</strong> Rs{room.price}
           </p>
         </div>
         <div className="col-md-6">
@@ -244,7 +244,7 @@ const BookRoom = () => {
                   />
                 </div>
                 <div className="mb-3">
-                  <h5>Total Amount: ${calculateTotal().toFixed(2)}</h5>
+                  <h5>Total Amount: Rs{calculateTotal().toFixed(2)}</h5>
                 </div>
                 <button
                   type="submit"

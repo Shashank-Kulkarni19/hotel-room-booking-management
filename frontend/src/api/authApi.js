@@ -15,5 +15,20 @@ export const authApi = {
     const response = await axiosInstance.get('/user/profile');
     return response.data;
   },
+
+  forgotPassword: async (email) => {
+    const response = await axiosInstance.post('/auth/forgot-password', { email });
+    return response.data;
+  },
+
+  verifyOtp: async (email, otp) => {
+    const response = await axiosInstance.post('/auth/verify-otp', { email, otp });
+    return response.data;
+  },
+
+  resetPassword: async (email, password) => {
+    const response = await axiosInstance.post('/auth/reset-password', { email, password });
+    return response.data;
+  },
 };
 

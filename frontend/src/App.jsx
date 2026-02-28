@@ -13,12 +13,14 @@ import Rooms from './pages/Rooms';
 import RoomDetails from './pages/RoomDetails';
 import BookRoom from './pages/BookRoom';
 import MyBookings from './pages/MyBookings';
+import ForgotPassword from './pages/ForgotPassword';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard';
 import ManageRooms from './pages/admin/ManageRooms';
 import ManageBookings from './pages/admin/ManageBookings';
 import ManageUsers from './pages/admin/ManageUsers';
+import AnalyticsDashboard from './pages/admin/AnalyticsDashboard';
 
 function App() {
   return (
@@ -31,6 +33,7 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/rooms" element={<Rooms />} />
               <Route path="/rooms/:id" element={<RoomDetails />} />
               <Route
@@ -54,6 +57,14 @@ function App() {
                 element={
                   <ProtectedRoute requireAdmin={true}>
                     <AdminDashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/analytics"
+                element={
+                  <ProtectedRoute requireAdmin={true}>
+                    <AnalyticsDashboard />
                   </ProtectedRoute>
                 }
               />

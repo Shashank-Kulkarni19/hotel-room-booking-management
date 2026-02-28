@@ -115,6 +115,13 @@ const AdminDashboard = () => {
             <div className="glass-card p-4 border-0 shadow-sm h-100">
               <h4 className="mb-4">Quick Operations</h4>
               <div className="d-grid gap-3">
+                <Link to="/admin/analytics" className="btn btn-primary text-start p-3 d-flex align-items-center gap-3">
+                  <span className="fs-4">📊</span>
+                  <div>
+                    <div className="fw-bold">Analytics Dashboard</div>
+                    <div className="small text-white-50">View revenue and booking trends</div>
+                  </div>
+                </Link>
                 <Link to="/admin/rooms" className="btn btn-light bg-white border text-start p-3 d-flex align-items-center gap-3">
                   <span className="fs-4">🛏️</span>
                   <div>

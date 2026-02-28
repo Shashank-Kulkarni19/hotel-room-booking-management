@@ -228,6 +228,14 @@ public class PaymentServiceImpl implements PaymentService {
             payment.setRefundStatus("REFUNDED");
             paymentRepository.save(payment);
 
+            // Send refund confirmation email
+            try {
+                emailService.sendRefundEmail(payment.getBooking(), payment.getAmount(), refundId);
+            } catch (Exception e) {
+                logger.error("Failed to send refund email for booking ID {}: {}", bookingId, e.getMessage());
+                // Don't fail the transaction if email fails
+            }
+
             // Return success response
             PaymentResponse response = new PaymentResponse();
             response.setSuccess(true);
