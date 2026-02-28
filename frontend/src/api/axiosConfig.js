@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8080/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
 
 // Create axios instance
 const axiosInstance = axios.create({
@@ -49,7 +49,7 @@ axiosInstance.interceptors.response.use(
         }, 1000);
       }
     }
-    
+
     // Format error message from backend response
     if (error.response?.data) {
       const errorData = error.response.data;
@@ -62,7 +62,7 @@ axiosInstance.interceptors.response.use(
         error.formattedMessage = Array.isArray(firstError) ? firstError[0] : firstError;
       }
     }
-    
+
     return Promise.reject(error);
   }
 );
