@@ -21,9 +21,9 @@ logs/
 .DS_Store
 Thumbs.db
 
-# Environment properties
-application.properties
-application.yml
+# Environment properties (removed to allow production deployment)
+# application.properties
+# application.yml
 
 # Maven wrapper files to keep:
 #mvnw
