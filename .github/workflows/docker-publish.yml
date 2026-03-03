@@ -1,3 +1,15 @@
+name: Docker
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
 jobs:
 
   build-backend:
@@ -12,7 +24,7 @@ jobs:
 
       - name: Install cosign
         if: github.event_name != 'pull_request'
-        uses: sigstore/cosign-installer@v3.5.0
+        uses: sigstore/cosign-installer@v3
         with:
           cosign-release: 'v2.2.4'
 
@@ -28,14 +40,11 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push Backend image
-        id: backend
         uses: docker/build-push-action@v5
         with:
           context: ./backend
           push: ${{ github.event_name != 'pull_request' }}
           tags: ghcr.io/${{ github.repository }}-backend:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
 
       - name: Sign Backend image
         if: github.event_name != 'pull_request'
@@ -55,7 +64,7 @@ jobs:
 
       - name: Install cosign
         if: github.event_name != 'pull_request'
-        uses: sigstore/cosign-installer@v3.5.0
+        uses: sigstore/cosign-installer@v3
         with:
           cosign-release: 'v2.2.4'
 
@@ -71,16 +80,12 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push Frontend image
-        id: frontend
         uses: docker/build-push-action@v5
         with:
           context: ./frontend
           push: ${{ github.event_name != 'pull_request' }}
           tags: ghcr.io/${{ github.repository }}-frontend:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
 
       - name: Sign Frontend image
         if: github.event_name != 'pull_request'
         run: cosign sign --yes ghcr.io/${{ github.repository }}-frontend:latest
-       
