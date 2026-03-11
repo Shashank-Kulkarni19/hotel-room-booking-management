@@ -3,19 +3,19 @@ services:
   - type: web
     name: hotel-backend
     runtime: docker
-    env: docker
-    rootDir: backend
-    plan: free # Change to 'starter' if you need more RAM
-    healthCheckPath: /api/rooms # Or any public endpoint
+    dockerContext: backend
+    dockerfilePath: backend/Dockerfile
+    plan: free
+    healthCheckPath: /api/rooms
     envVars:
       - key: SPRING_DATASOURCE_URL
-        sync: false # You will provide your MySQL URL here
+        sync: false 
       - key: SPRING_DATASOURCE_USERNAME
         sync: false
       - key: SPRING_DATASOURCE_PASSWORD
         sync: false
       - key: JWT_SECRET
-        generateValue: true # Generates a random secure secret
+        generateValue: true
       - key: RAZORPAY_KEY_ID
         sync: false
       - key: RAZORPAY_KEY_SECRET
@@ -31,14 +31,10 @@ services:
   - type: web
     name: hotel-frontend
     runtime: docker
-    env: docker
-    rootDir: frontend
+    dockerContext: frontend
+    dockerfilePath: frontend/Dockerfile
     plan: free
     envVars:
       - key: VITE_API_URL
-        fromService:
-          name: hotel-backend
-          type: web
-          property: host
-        # We append /api to the host provided by Render
-        value: ${hotel-backend.host}/api
+        # We reference the backend's URL directly here
+        value: ${hotel-backend.url}/api
