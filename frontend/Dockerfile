@@ -10,6 +10,8 @@ RUN npm install
 COPY . .
 
 # Build optimized production files
+ARG VITE_API_URL
+ENV VITE_API_URL=$VITE_API_URL
 RUN npm run build
 
 # ---- Production Stage ----
