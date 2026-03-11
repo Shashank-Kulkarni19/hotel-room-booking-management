@@ -72,15 +72,17 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        // Allow frontend running on localhost:5173 (mapped to container port 80)
-        configuration.setAllowedOrigins(List.of(
-                "http://localhost:5173"
+        // Allow frontend running on localhost:5173 and production Render URL
+        configuration.setAllowedOriginPatterns(List.of(
+                "http://localhost:5173",
+                "https://hotel-frontend-qpys.onrender.com",
+                "https://*.onrender.com"
         ));
 
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "X-Requested-With", "Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers"));
         configuration.setAllowCredentials(true);
-        configuration.setExposedHeaders(List.of("Authorization"));
+        configuration.setExposedHeaders(List.of("Authorization", "Content-Disposition"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
