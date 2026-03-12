@@ -50,19 +50,9 @@ public class JwtFilter extends OncePerRequestFilter {
             try {
                 username = jwtUtil.extractUsername(jwt);
             } catch (ExpiredJwtException eje) {
-                // Token expired - respond 401 with clear message so frontend can clear token and prompt login
-                // Use the logger API that accepts a message and a Throwable implementation
-                logger.warn("JWT expired", eje);
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.setContentType("application/json");
-                try {
-                    ServletOutputStream out = response.getOutputStream();
-                    out.print("{\"message\":\"JWT token expired\"}");
-                    out.flush();
-                } catch (IOException ioe) {
-                    logger.error("Failed writing JWT expired response", ioe);
-                }
-                return; // stop filter chain
+                logger.warn("JWT expired: " + eje.getMessage());
+                // Do not return early, let the filter chain continue.
+                // Request will be unauthenticated and handled by Security filters.
             } catch (JwtException | IllegalArgumentException e) {
                 logger.error("JWT token validation failed", e);
             }

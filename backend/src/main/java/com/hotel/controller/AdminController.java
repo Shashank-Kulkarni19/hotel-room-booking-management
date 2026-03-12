@@ -28,6 +28,7 @@ import com.hotel.service.UserService;
  */
 @RestController
 @RequestMapping("/api/admin")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class AdminController {
 
     @Autowired

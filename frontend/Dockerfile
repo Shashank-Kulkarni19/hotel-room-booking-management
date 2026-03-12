@@ -23,6 +23,9 @@ RUN rm -rf /usr/share/nginx/html/*
 # Copy build output
 COPY --from=build /app/dist /usr/share/nginx/html
 
+# Copy nginx config for client-side routing
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 # Expose Nginx port
 EXPOSE 80
 

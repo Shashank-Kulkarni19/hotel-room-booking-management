@@ -163,11 +163,18 @@ public class BookingServiceImpl implements BookingService {
     private BookingResponse convertToResponse(Booking booking) {
         BookingResponse response = new BookingResponse();
         response.setId(booking.getId());
-        response.setUserId(booking.getUser().getId());
-        response.setUserName(booking.getUser().getName());
-        response.setRoomId(booking.getRoom().getId());
-        response.setRoomType(booking.getRoom().getRoomType());
-        response.setRoomNumber(booking.getRoom().getRoomNumber());
+        
+        if (booking.getUser() != null) {
+            response.setUserId(booking.getUser().getId());
+            response.setUserName(booking.getUser().getName());
+        }
+        
+        if (booking.getRoom() != null) {
+            response.setRoomId(booking.getRoom().getId());
+            response.setRoomType(booking.getRoom().getRoomType());
+            response.setRoomNumber(booking.getRoom().getRoomNumber());
+        }
+        
         response.setCheckInDate(booking.getCheckInDate());
         response.setCheckOutDate(booking.getCheckOutDate());
         response.setBookingDate(booking.getCreatedAt() != null ? booking.getCreatedAt().toLocalDate() : null);
