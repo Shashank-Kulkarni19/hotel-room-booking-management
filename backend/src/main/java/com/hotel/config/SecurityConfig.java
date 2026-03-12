@@ -57,7 +57,7 @@ public class SecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
-                .cors(cors -> {}) // Uses GlobalCorsConfig bean
+                .cors(cors -> cors.disable()) // Handled by FilterRegistrationBean in GlobalCorsConfig
                 .csrf(csrf -> csrf.disable())
 
                 .sessionManagement(session ->
@@ -65,13 +65,13 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
 
-                        // Allow preflight requests
+                        // Explicitly allow OPTIONS for all paths
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-                        // Public APIs
+                        // Public APIs - including permutations for slashed/unslashed
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/rooms/**").permitAll()
-                        .requestMatchers("/api/ratings/**").permitAll()
+                        .requestMatchers("/api/rooms", "/api/rooms/**").permitAll()
+                        .requestMatchers("/api/ratings", "/api/ratings/**").permitAll()
                         .requestMatchers("/error").permitAll()
 
                         // Role based APIs

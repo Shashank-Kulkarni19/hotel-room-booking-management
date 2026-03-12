@@ -1,10 +1,12 @@
 package com.hotel.config;
 
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import java.util.List;
 
@@ -12,14 +14,16 @@ import java.util.List;
 public class GlobalCorsConfig {
 
     @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-
+    public FilterRegistrationBean<CorsFilter> corsFilter() {
         CorsConfiguration configuration = new CorsConfiguration();
 
+        // Use allowedOriginPatterns to support credential-based requests with dynamic origins
         configuration.setAllowedOriginPatterns(
                 List.of(
                         "https://hotel-frontend-qpys.onrender.com",
-                        "http://localhost:5173"
+                        "https://*.onrender.com",
+                        "http://localhost:5173",
+                        "http://localhost:3000"
                 )
         );
 
@@ -28,20 +32,15 @@ public class GlobalCorsConfig {
         );
 
         configuration.setAllowedHeaders(List.of("*"));
-
         configuration.setAllowCredentials(true);
-
-        configuration.setExposedHeaders(
-                List.of("Authorization", "Content-Disposition")
-        );
-
+        configuration.setExposedHeaders(List.of("Authorization", "Content-Disposition"));
         configuration.setMaxAge(3600L);
 
-        UrlBasedCorsConfigurationSource source =
-                new UrlBasedCorsConfigurationSource();
-
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
 
-        return source;
+        FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<>(new CorsFilter(source));
+        bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
+        return bean;
     }
 }
