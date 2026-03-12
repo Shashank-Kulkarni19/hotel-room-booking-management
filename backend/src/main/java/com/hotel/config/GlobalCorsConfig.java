@@ -16,7 +16,7 @@ public class GlobalCorsConfig {
 
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(
+        configuration.setAllowedOriginPatterns(
                 List.of(
                         "https://hotel-frontend-qpys.onrender.com",
                         "http://localhost:5173"
@@ -24,14 +24,18 @@ public class GlobalCorsConfig {
         );
 
         configuration.setAllowedMethods(
-                List.of("GET","POST","PUT","DELETE","PATCH","OPTIONS")
+                List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
         );
 
         configuration.setAllowedHeaders(List.of("*"));
 
         configuration.setAllowCredentials(true);
 
-        configuration.setExposedHeaders(List.of("Authorization"));
+        configuration.setExposedHeaders(
+                List.of("Authorization", "Content-Disposition")
+        );
+
+        configuration.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source =
                 new UrlBasedCorsConfigurationSource();
