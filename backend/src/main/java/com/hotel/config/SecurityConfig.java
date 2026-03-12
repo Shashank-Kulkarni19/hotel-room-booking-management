@@ -97,46 +97,37 @@ public class SecurityConfig {
     }
 
     @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
+public CorsConfigurationSource corsConfigurationSource() {
 
-        CorsConfiguration configuration = new CorsConfiguration();
+    CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(
-                List.of(
-                        "https://hotel-frontend-qpys.onrender.com",
-                        "http://localhost:3000"
-                )
-        );
+    // Allow both production and Vite dev server
+    configuration.setAllowedOriginPatterns(
+            List.of(
+                    "https://hotel-frontend-qpys.onrender.com",
+                    "http://localhost:5173"
+            )
+    );
 
-        configuration.setAllowedMethods(
-                Arrays.asList(
-                        "GET",
-                        "POST",
-                        "PUT",
-                        "DELETE",
-                        "PATCH",
-                        "OPTIONS"
-                )
-        );
+    configuration.setAllowedMethods(
+            List.of("GET","POST","PUT","DELETE","PATCH","OPTIONS")
+    );
 
-        configuration.setAllowedHeaders(List.of("*"));
+    configuration.setAllowedHeaders(List.of("*"));
 
-        configuration.setAllowCredentials(true);
+    configuration.setAllowCredentials(true);
 
-        configuration.setExposedHeaders(
-                List.of(
-                        "Authorization",
-                        "Content-Disposition"
-                )
-        );
+    configuration.setExposedHeaders(
+            List.of("Authorization","Content-Disposition")
+    );
 
-        configuration.setMaxAge(3600L);
+    configuration.setMaxAge(3600L);
 
-        UrlBasedCorsConfigurationSource source =
-                new UrlBasedCorsConfigurationSource();
+    UrlBasedCorsConfigurationSource source =
+            new UrlBasedCorsConfigurationSource();
 
-        source.registerCorsConfiguration("/**", configuration);
+    source.registerCorsConfiguration("/**", configuration);
 
-        return source;
-    }
+    return source;
+}
 }
