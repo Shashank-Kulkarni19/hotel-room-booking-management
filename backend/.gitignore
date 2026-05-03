@@ -44,3 +44,6 @@ Thumbs.db
 
 # Generated metadata
 META-INF/
+
+# Environment files
+.env
